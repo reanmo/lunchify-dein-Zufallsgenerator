@@ -5,18 +5,26 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-part 'favorites.g.dart';
+part 'database.g.dart';
 
 class Restaurants extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-  TextColumn get backgroundColor => text().nullable()();
+  TextColumn get imagePath => text()();
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 }
 
+// Add this method in the Favorites class
+RestaurantsCompanion convertToCompanion(Restaurant restaurant) {
+  return RestaurantsCompanion(
+    name: Value(restaurant.name),
+    imagePath: Value(restaurant.imagePath),
+  );
+}
+
 @DriftDatabase(tables: [Restaurants])
-class Favorites extends _$AppDatabase {
-  Favorites() : super(_openConnection());
+class Database extends _$Database {
+  Database() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;

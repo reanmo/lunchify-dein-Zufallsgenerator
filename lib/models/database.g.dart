@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'favorites.dart';
+part of 'database.dart';
 
 // ignore_for_file: type=lint
 class $RestaurantsTable extends Restaurants
@@ -42,6 +42,17 @@ class $RestaurantsTable extends Restaurants
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _imagePathMeta = const VerificationMeta(
+    'imagePath',
+  );
+  @override
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+    'image_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _isFavoriteMeta = const VerificationMeta(
     'isFavorite',
   );
@@ -58,7 +69,13 @@ class $RestaurantsTable extends Restaurants
     defaultValue: const Constant(false),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, backgroundColor, isFavorite];
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    backgroundColor,
+    imagePath,
+    isFavorite,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -91,6 +108,14 @@ class $RestaurantsTable extends Restaurants
         ),
       );
     }
+    if (data.containsKey('image_path')) {
+      context.handle(
+        _imagePathMeta,
+        imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_imagePathMeta);
+    }
     if (data.containsKey('is_favorite')) {
       context.handle(
         _isFavoriteMeta,
@@ -120,6 +145,11 @@ class $RestaurantsTable extends Restaurants
         DriftSqlType.string,
         data['${effectivePrefix}background_color'],
       ),
+      imagePath:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}image_path'],
+          )!,
       isFavorite:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -138,11 +168,13 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
   final int id;
   final String name;
   final String? backgroundColor;
+  final String imagePath;
   final bool isFavorite;
   const Restaurant({
     required this.id,
     required this.name,
     this.backgroundColor,
+    required this.imagePath,
     required this.isFavorite,
   });
   @override
@@ -153,6 +185,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
     if (!nullToAbsent || backgroundColor != null) {
       map['background_color'] = Variable<String>(backgroundColor);
     }
+    map['image_path'] = Variable<String>(imagePath);
     map['is_favorite'] = Variable<bool>(isFavorite);
     return map;
   }
@@ -165,6 +198,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
           backgroundColor == null && nullToAbsent
               ? const Value.absent()
               : Value(backgroundColor),
+      imagePath: Value(imagePath),
       isFavorite: Value(isFavorite),
     );
   }
@@ -178,6 +212,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       backgroundColor: serializer.fromJson<String?>(json['backgroundColor']),
+      imagePath: serializer.fromJson<String>(json['imagePath']),
       isFavorite: serializer.fromJson<bool>(json['isFavorite']),
     );
   }
@@ -188,6 +223,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'backgroundColor': serializer.toJson<String?>(backgroundColor),
+      'imagePath': serializer.toJson<String>(imagePath),
       'isFavorite': serializer.toJson<bool>(isFavorite),
     };
   }
@@ -196,12 +232,14 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
     int? id,
     String? name,
     Value<String?> backgroundColor = const Value.absent(),
+    String? imagePath,
     bool? isFavorite,
   }) => Restaurant(
     id: id ?? this.id,
     name: name ?? this.name,
     backgroundColor:
         backgroundColor.present ? backgroundColor.value : this.backgroundColor,
+    imagePath: imagePath ?? this.imagePath,
     isFavorite: isFavorite ?? this.isFavorite,
   );
   Restaurant copyWithCompanion(RestaurantsCompanion data) {
@@ -212,6 +250,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
           data.backgroundColor.present
               ? data.backgroundColor.value
               : this.backgroundColor,
+      imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
       isFavorite:
           data.isFavorite.present ? data.isFavorite.value : this.isFavorite,
     );
@@ -223,13 +262,15 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('backgroundColor: $backgroundColor, ')
+          ..write('imagePath: $imagePath, ')
           ..write('isFavorite: $isFavorite')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, backgroundColor, isFavorite);
+  int get hashCode =>
+      Object.hash(id, name, backgroundColor, imagePath, isFavorite);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -237,6 +278,7 @@ class Restaurant extends DataClass implements Insertable<Restaurant> {
           other.id == this.id &&
           other.name == this.name &&
           other.backgroundColor == this.backgroundColor &&
+          other.imagePath == this.imagePath &&
           other.isFavorite == this.isFavorite);
 }
 
@@ -244,29 +286,35 @@ class RestaurantsCompanion extends UpdateCompanion<Restaurant> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> backgroundColor;
+  final Value<String> imagePath;
   final Value<bool> isFavorite;
   const RestaurantsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.backgroundColor = const Value.absent(),
+    this.imagePath = const Value.absent(),
     this.isFavorite = const Value.absent(),
   });
   RestaurantsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.backgroundColor = const Value.absent(),
+    required String imagePath,
     this.isFavorite = const Value.absent(),
-  }) : name = Value(name);
+  }) : name = Value(name),
+       imagePath = Value(imagePath);
   static Insertable<Restaurant> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? backgroundColor,
+    Expression<String>? imagePath,
     Expression<bool>? isFavorite,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (backgroundColor != null) 'background_color': backgroundColor,
+      if (imagePath != null) 'image_path': imagePath,
       if (isFavorite != null) 'is_favorite': isFavorite,
     });
   }
@@ -275,12 +323,14 @@ class RestaurantsCompanion extends UpdateCompanion<Restaurant> {
     Value<int>? id,
     Value<String>? name,
     Value<String?>? backgroundColor,
+    Value<String>? imagePath,
     Value<bool>? isFavorite,
   }) {
     return RestaurantsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      imagePath: imagePath ?? this.imagePath,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }
@@ -297,6 +347,9 @@ class RestaurantsCompanion extends UpdateCompanion<Restaurant> {
     if (backgroundColor.present) {
       map['background_color'] = Variable<String>(backgroundColor.value);
     }
+    if (imagePath.present) {
+      map['image_path'] = Variable<String>(imagePath.value);
+    }
     if (isFavorite.present) {
       map['is_favorite'] = Variable<bool>(isFavorite.value);
     }
@@ -309,15 +362,16 @@ class RestaurantsCompanion extends UpdateCompanion<Restaurant> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('backgroundColor: $backgroundColor, ')
+          ..write('imagePath: $imagePath, ')
           ..write('isFavorite: $isFavorite')
           ..write(')'))
         .toString();
   }
 }
 
-abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(e);
-  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+abstract class _$Database extends GeneratedDatabase {
+  _$Database(QueryExecutor e) : super(e);
+  $DatabaseManager get managers => $DatabaseManager(this);
   late final $RestaurantsTable restaurants = $RestaurantsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -331,6 +385,7 @@ typedef $$RestaurantsTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       Value<String?> backgroundColor,
+      required String imagePath,
       Value<bool> isFavorite,
     });
 typedef $$RestaurantsTableUpdateCompanionBuilder =
@@ -338,11 +393,12 @@ typedef $$RestaurantsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<String?> backgroundColor,
+      Value<String> imagePath,
       Value<bool> isFavorite,
     });
 
 class $$RestaurantsTableFilterComposer
-    extends Composer<_$AppDatabase, $RestaurantsTable> {
+    extends Composer<_$Database, $RestaurantsTable> {
   $$RestaurantsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -365,6 +421,11 @@ class $$RestaurantsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<bool> get isFavorite => $composableBuilder(
     column: $table.isFavorite,
     builder: (column) => ColumnFilters(column),
@@ -372,7 +433,7 @@ class $$RestaurantsTableFilterComposer
 }
 
 class $$RestaurantsTableOrderingComposer
-    extends Composer<_$AppDatabase, $RestaurantsTable> {
+    extends Composer<_$Database, $RestaurantsTable> {
   $$RestaurantsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -395,6 +456,11 @@ class $$RestaurantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isFavorite => $composableBuilder(
     column: $table.isFavorite,
     builder: (column) => ColumnOrderings(column),
@@ -402,7 +468,7 @@ class $$RestaurantsTableOrderingComposer
 }
 
 class $$RestaurantsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $RestaurantsTable> {
+    extends Composer<_$Database, $RestaurantsTable> {
   $$RestaurantsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -421,6 +487,9 @@ class $$RestaurantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get imagePath =>
+      $composableBuilder(column: $table.imagePath, builder: (column) => column);
+
   GeneratedColumn<bool> get isFavorite => $composableBuilder(
     column: $table.isFavorite,
     builder: (column) => column,
@@ -430,7 +499,7 @@ class $$RestaurantsTableAnnotationComposer
 class $$RestaurantsTableTableManager
     extends
         RootTableManager<
-          _$AppDatabase,
+          _$Database,
           $RestaurantsTable,
           Restaurant,
           $$RestaurantsTableFilterComposer,
@@ -440,12 +509,12 @@ class $$RestaurantsTableTableManager
           $$RestaurantsTableUpdateCompanionBuilder,
           (
             Restaurant,
-            BaseReferences<_$AppDatabase, $RestaurantsTable, Restaurant>,
+            BaseReferences<_$Database, $RestaurantsTable, Restaurant>,
           ),
           Restaurant,
           PrefetchHooks Function()
         > {
-  $$RestaurantsTableTableManager(_$AppDatabase db, $RestaurantsTable table)
+  $$RestaurantsTableTableManager(_$Database db, $RestaurantsTable table)
     : super(
         TableManagerState(
           db: db,
@@ -462,11 +531,13 @@ class $$RestaurantsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> backgroundColor = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
                 Value<bool> isFavorite = const Value.absent(),
               }) => RestaurantsCompanion(
                 id: id,
                 name: name,
                 backgroundColor: backgroundColor,
+                imagePath: imagePath,
                 isFavorite: isFavorite,
               ),
           createCompanionCallback:
@@ -474,11 +545,13 @@ class $$RestaurantsTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 Value<String?> backgroundColor = const Value.absent(),
+                required String imagePath,
                 Value<bool> isFavorite = const Value.absent(),
               }) => RestaurantsCompanion.insert(
                 id: id,
                 name: name,
                 backgroundColor: backgroundColor,
+                imagePath: imagePath,
                 isFavorite: isFavorite,
               ),
           withReferenceMapper:
@@ -498,7 +571,7 @@ class $$RestaurantsTableTableManager
 
 typedef $$RestaurantsTableProcessedTableManager =
     ProcessedTableManager<
-      _$AppDatabase,
+      _$Database,
       $RestaurantsTable,
       Restaurant,
       $$RestaurantsTableFilterComposer,
@@ -506,17 +579,14 @@ typedef $$RestaurantsTableProcessedTableManager =
       $$RestaurantsTableAnnotationComposer,
       $$RestaurantsTableCreateCompanionBuilder,
       $$RestaurantsTableUpdateCompanionBuilder,
-      (
-        Restaurant,
-        BaseReferences<_$AppDatabase, $RestaurantsTable, Restaurant>,
-      ),
+      (Restaurant, BaseReferences<_$Database, $RestaurantsTable, Restaurant>),
       Restaurant,
       PrefetchHooks Function()
     >;
 
-class $AppDatabaseManager {
-  final _$AppDatabase _db;
-  $AppDatabaseManager(this._db);
+class $DatabaseManager {
+  final _$Database _db;
+  $DatabaseManager(this._db);
   $$RestaurantsTableTableManager get restaurants =>
       $$RestaurantsTableTableManager(_db, _db.restaurants);
 }
