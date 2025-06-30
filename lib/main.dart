@@ -161,7 +161,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       }
                     },
-                    icon: Icon(Icons.list, size: 50, color: Colors.grey[500]),
+                    icon: Icon(
+                      Icons.fastfood,
+                      size: 50,
+                      color: Colors.grey[500],
+                    ),
                   ),
                   IconButton(
                     onPressed: () {
